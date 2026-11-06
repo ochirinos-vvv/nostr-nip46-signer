@@ -1,0 +1,17 @@
+services:
+  signer:
+    build: .
+    image: nip46-signer
+    container_name: nip46-signer
+    env_file: .env            # must define SIGNER_PASSPHRASE
+    environment:
+      SIGNER_DATA_DIR: /app/data
+    ports:
+      # Published only on localhost: the app has no authentication of its own.
+      - "127.0.0.1:8000:8000"
+    volumes:
+      - signer-data:/app/data # encrypted keys.json survives container restarts
+    restart: unless-stopped
+
+volumes:
+  signer-data:

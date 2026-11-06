@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Firmante NIP-46</title>
+  <link rel="stylesheet" href="app.css">
+</head>
+<body>
+  <header class="topbar">
+    <h1>Firmante NIP-46</h1>
+    <span class="subtitle">Guarda tu clave Nostr y úsala para iniciar sesión en Stacker News</span>
+  </header>
+
+  <main class="layout">
+    <!-- Columna izquierda: claves -->
+    <section class="card" id="keys-card">
+      <h2>1. Tu clave</h2>
+
+      <div class="tabs" role="tablist">
+        <button class="tab active" data-tab="generate" role="tab">Crear nueva</button>
+        <button class="tab" data-tab="import" role="tab">Importar existente</button>
+      </div>
+
+      <form id="form-generate" class="tab-panel" data-panel="generate">
+        <label>Nombre
+          <input name="name" maxlength="64" placeholder="ej. personal">
+        </label>
+        <button type="submit" class="btn primary">Generar clave</button>
+      </form>
+
+      <form id="form-import" class="tab-panel hidden" data-panel="import">
+        <label>Nombre
+          <input name="name" maxlength="64" placeholder="ej. personal">
+        </label>
+        <label>Clave secreta
+          <input name="secret" type="password" autocomplete="off" placeholder="nsec1... o 64 caracteres hex" required>
+        </label>
+        <button type="submit" class="btn primary">Importar clave</button>
+      </form>
+
+      <h3>Claves guardadas</h3>
+      <ul id="key-list" class="key-list"></ul>
+      <p id="key-empty" class="muted">Aún no hay claves. Crea o importa una.</p>
+    </section>
+
+    <!-- Columna derecha: firmante de la clave seleccionada -->
+    <section class="card" id="signer-card">
+      <div id="signer-empty" class="muted center">Selecciona una clave para conectarla a Stacker News.</div>
+
+      <div id="signer-panel" class="hidden">
+        <div class="signer-head">
+          <div>
+            <h2 id="signer-name"></h2>
+            <code id="signer-npub" class="mono"></code>
+          </div>
+          <div class="row">
+            <button class="btn" id="copy-npub">Copiar npub</button>
+            <button class="btn danger" id="delete-key">Eliminar</button>
+          </div>
+        </div>
+
+        <h2>2. Conectar con Stacker News</h2>
+        <ol class="steps">
+          <li>Genera una URI <code>bunker://</code> (sirve una sola vez).</li>
+          <li>Abre el <a href="https://stacker.news/signup?callbackUrl=https%3A%2F%2Fstacker.news%2F&type=nostr" target="_blank" rel="noopener">login de Stacker News con Nostr</a>.</li>
+          <li>Pega la URI en la opción de firmante remoto (bunker).</li>
+        </ol>
+        <button class="btn primary" id="new-bunker">Generar URI bunker</button>
+        <div id="bunker-box" class="uri-box hidden">
+          <code id="bunker-uri" class="mono"></code>
+          <button class="btn" id="copy-bunker">Copiar</button>
+        </div>
+
+        <details class="alt-flow">
+          <summary>¿El sitio te muestra una URI <code>nostrconnect://</code>?</summary>
+          <form id="form-nostrconnect">
+            <input name="uri" placeholder="nostrconnect://..." required>
+            <button type="submit" class="btn">Conectar</button>
+          </form>
+        </details>
+
+        <h2>3. Estado</h2>
+        <div class="status-grid">
+          <div>
+            <h3>Relays</h3>
+            <ul id="relay-list" class="chips"></ul>
+          </div>
+          <div>
+            <h3>Clientes autorizados</h3>
+            <ul id="client-list" class="client-list"></ul>
+            <p id="client-empty" class="muted">Ningún cliente conectado.</p>
+          </div>
+        </div>
+
+        <h3>Actividad <span class="muted small">(se actualiza sola)</span></h3>
+        <div class="table-wrap">
+          <table class="activity">
+            <thead><tr><th>Hora</th><th>Método</th><th>Cliente</th><th>Resultado</th></tr></thead>
+            <tbody id="activity-body"></tbody>
+          </table>
+        </div>
+        <p id="activity-empty" class="muted">Sin solicitudes todavía.</p>
+      </div>
+    </section>
+  </main>
+
+  <div id="toast" class="toast hidden" role="status"></div>
+
+  <script src="vendor/jquery-3.7.1.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
